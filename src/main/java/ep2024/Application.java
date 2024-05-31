@@ -5,8 +5,12 @@ import ep2024.entities.Article;
 import ep2024.entities.Book;
 import ep2024.entities.Catalogue;
 import ep2024.enums.Release;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,12 +42,27 @@ public class Application {
         findElementsByYear(1956, initialCatalogue);
 
         findBooksByAuthor("George Orwell", initialCatalogue);
+
+
+        try {
+            saveToDisk(initialCatalogue);
+            System.out.println(System.lineSeparator() + "File successfully written!");
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        try {
+            List<Catalogue> loadCatalogue = loadFromDisk();
+            System.out.println(System.lineSeparator() + "File successfully loaded!");
+            System.out.println("Loaded catalogue: ");
+            loadCatalogue.forEach(System.out::println);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     public static void addElementToCatalogue(List<Catalogue> catalogue, Catalogue item) {
         catalogue.add(item);
-        System.out.println();
-        System.out.println("'" + item.getTitle() + "' successfully added!");
+        System.out.println(System.lineSeparator() + "'" + item.getTitle() + "' successfully added!");
         System.out.println("Updating catalogue...");
 
         catalogue.forEach(System.out::println);
@@ -52,8 +71,7 @@ public class Application {
     public static void removeElementFromCatalogue(String isbn, List<Catalogue> catalogue) {
         boolean found = catalogue.removeIf(item -> item.getIsbn().equals(isbn));
         if (found) {
-            System.out.println();
-            System.out.println("Element with ISBN " + isbn + " successfully removed!");
+            System.out.println(System.lineSeparator() + "Element with ISBN " + isbn + " successfully removed!");
             System.out.println("Updating catalogue...");
 
             catalogue.forEach(System.out::println);
@@ -101,6 +119,60 @@ public class Application {
         } else {
             System.out.println("No books found by Author " + author);
         }
+    }
+
+    public static void saveToDisk(List<Catalogue> catalogue) throws IOException {
+        StringBuilder toWrite = new StringBuilder();
+
+        for (Catalogue item : catalogue) {
+            toWrite.append(item.getIsbn())
+                    .append("@")
+                    .append(item.getTitle())
+                    .append("@")
+                    .append(item.getYear())
+                    .append("@")
+                    .append(item.getPages());
+            if (item instanceof Book book) {
+                toWrite.append("@")
+                        .append(book.getAuthor())
+                        .append("@")
+                        .append(book.getGenre());
+            }
+            if (item instanceof Article article) {
+                toWrite.append("@")
+                        .append(article.getRelease());
+            }
+            toWrite.append("#");
+        }
+        File file = new File("src/main/bibliographic_catalogue.txt");
+        FileUtils.writeStringToFile(file, toWrite.toString(), "UTF-8");
+    }
+
+    public static List<Catalogue> loadFromDisk() throws IOException {
+        File file = new File("src/main/bibliographic_catalogue.txt");
+        String fileString = FileUtils.readFileToString(file, "UTF-8");
+        List<String> splitElementString = Arrays.asList(fileString.split("#"));
+
+        return splitElementString.stream().map(string -> {
+            String[] catalogueInfo = string.split("@");
+            String isbn = catalogueInfo[0];
+            String title = catalogueInfo[1];
+            int year = Integer.parseInt(catalogueInfo[2]);
+            int pages = Integer.parseInt(catalogueInfo[3]);
+
+            if (catalogueInfo.length == 6) {
+                String author = catalogueInfo[4];
+                String genre = catalogueInfo[5];
+                return new Book(isbn, title, year, pages, author, genre);
+            } else if (catalogueInfo.length == 5) {
+                Release release = Release.valueOf(catalogueInfo[4]);
+                return new Article(isbn, title, year, pages, release);
+            } else {
+                System.err.println("Invalid catalogue information");
+                return null;
+            }
+        }).toList();
+
     }
 
     public static List<Catalogue> generateInitialCatalogue() {
