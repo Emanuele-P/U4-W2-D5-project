@@ -18,4 +18,12 @@ public class Article extends Catalogue {
     public void setRelease(Release release) {
         this.release = release;
     }
+
+    @Override
+    public String toString() {
+        return "Article {" +
+                super.toString() +
+                " release: " + release +
+                '}';
+    }
 }
