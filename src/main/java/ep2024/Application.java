@@ -9,10 +9,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Application {
@@ -20,29 +17,119 @@ public class Application {
     public static void main(String[] args) {
 
         List<Catalogue> initialCatalogue = generateInitialCatalogue();
-        System.out.println("BIBLIOGRAPHIC CATALOGUE:");
-        for (Catalogue item : initialCatalogue) {
-            System.out.println(item);
-        }
+//        System.out.println("BIBLIOGRAPHIC CATALOGUE:");
+//        for (Catalogue item : initialCatalogue) {
+//            System.out.println(item);
+//        }
 
-        Book newBook = new Book("8762950430408", "Snow country", 1956, 346, "Yasunari Kawabata", "Novel");
-        addElementToCatalogue(initialCatalogue, newBook);
-        Article newArticle = new Article("6029950737040", "A Swiftly Tilting Planet", 2012, 133, Release.SEMESTRAL);
-        addElementToCatalogue(initialCatalogue, newArticle);
-        Book newBook2 = new Book("4729385627103", "1984", 1949, 328, "George Orwell", "Dystopian");
-        addElementToCatalogue(initialCatalogue, newBook2);
-        Book newBook3 = new Book("9354738291564", "Animal Farm", 1945, 92, "George Orwell", "Political satire");
-        addElementToCatalogue(initialCatalogue, newBook3);
+//        Book newBook = new Book("8762950430408", "Snow country", 1956, 346, "Yasunari Kawabata", "Novel");
+//        addElementToCatalogue(initialCatalogue, newBook);
+//        Article newArticle = new Article("6029950737040", "A Swiftly Tilting Planet", 2012, 133, Release.SEMESTRAL);
+//        addElementToCatalogue(initialCatalogue, newArticle);
+//        Book newBook2 = new Book("4729385627103", "1984", 1949, 328, "George Orwell", "Dystopian");
+//        addElementToCatalogue(initialCatalogue, newBook2);
+//        Book newBook3 = new Book("9354738291564", "Animal Farm", 1945, 92, "George Orwell", "Political satire");
+//        addElementToCatalogue(initialCatalogue, newBook3);
+//
+//
+//        removeElementFromCatalogue("6029950737040", initialCatalogue);
+//
+//        findElementByIsbn("8762950430408", initialCatalogue);
+//
+//        findElementsByYear(1956, initialCatalogue);
+//
+//        findBooksByAuthor("George Orwell", initialCatalogue);
 
+        Scanner sc = new Scanner(System.in);
+        int menuChoice;
 
-        removeElementFromCatalogue("6029950737040", initialCatalogue);
+        do {
+            System.out.println(System.lineSeparator() + "--------MAIN MENU--------");
+            System.out.println("1 - View complete catalogue");
+            System.out.println("2 - Add a new book");
+            System.out.println("3 - Add a new article");
+            System.out.println("4 - Remove an item by ISBN");
+            System.out.println("5 - Find an item by ISBN");
+            System.out.println("6 - Find an item by Year");
+            System.out.println("7 - Find books by Author");
+            System.out.println("0 - Exit");
+            System.out.println("Select a number: ");
+            menuChoice = sc.nextInt();
+            sc.nextLine();
 
-        findElementByIsbn("8762950430408", initialCatalogue);
+            switch (menuChoice) {
+                case 1:
+                    System.out.println("--------COMPLETE CATALOGUE--------");
+                    initialCatalogue.forEach(System.out::println);
+                    break;
+                case 2:
+                    System.out.println("--------ADD A NEW BOOK--------");
+                    System.out.println("Enter ISBN: ");
+                    String isbn = sc.nextLine();
+                    System.out.println("Enter title: ");
+                    String title = sc.nextLine();
+                    System.out.println("Enter year: ");
+                    int year = sc.nextInt();
+                    System.out.println("Enter number of pages: ");
+                    int pages = sc.nextInt();
+                    sc.nextLine();
+                    System.out.println("Enter name of the author: ");
+                    String author = sc.nextLine();
+                    System.out.println("Enter genre: ");
+                    String genre = sc.nextLine();
+                    Book book = new Book(isbn, title, year, pages, author, genre);
+                    addElementToCatalogue(initialCatalogue, book);
+                    break;
+                case 3:
+                    System.out.println("--------ADD A NEW ARTICLE--------");
+                    System.out.println("Enter ISBN: ");
+                    String isbn2 = sc.nextLine();
+                    System.out.println("Enter title: ");
+                    String title2 = sc.nextLine();
+                    System.out.println("Enter year: ");
+                    int year2 = sc.nextInt();
+                    System.out.println("Enter number of pages: ");
+                    int pages2 = sc.nextInt();
+                    sc.nextLine();
+                    System.out.println("Enter release period (WEEKLY/MONTHLY/SEMESTRAL)");
+                    String releasePeriod = sc.nextLine();
+                    Release release = Release.valueOf(releasePeriod.toUpperCase());
+                    Article article = new Article(isbn2, title2, year2, pages2, release);
+                    addElementToCatalogue(initialCatalogue, article);
+                    break;
+                case 4:
+                    System.out.println("--------REMOVE ITEM BY ISBN--------");
+                    System.out.print("Enter ISBN of item to remove: ");
+                    String removeIsbn = sc.nextLine();
+                    removeElementFromCatalogue(removeIsbn, initialCatalogue);
+                    break;
+                case 5:
+                    System.out.println("--------FIND ITEM BY ISBN--------");
+                    System.out.print("Enter ISBN to find: ");
+                    String findIsbn = sc.nextLine();
+                    findElementByIsbn(findIsbn, initialCatalogue);
+                    break;
+                case 6:
+                    System.out.println("--------FIND ITEM BY YEAR--------");
+                    System.out.print("Enter year to find: ");
+                    int findYear = sc.nextInt();
+                    findElementsByYear(findYear, initialCatalogue);
+                    break;
+                case 7:
+                    System.out.println("--------FIND BOOK BY AUTHOR--------");
+                    System.out.print("Enter author to find: ");
+                    String findAuthor = sc.nextLine();
+                    findBooksByAuthor(findAuthor, initialCatalogue);
+                    break;
+                case 0:
+                    System.out.println("Exiting...");
+                    break;
+                default:
+                    System.out.println("Invalid selection :( Please try again.");
+            }
+        } while (menuChoice != 0);
 
-        findElementsByYear(1956, initialCatalogue);
-
-        findBooksByAuthor("George Orwell", initialCatalogue);
-
+        sc.close();
 
         try {
             saveToDisk(initialCatalogue);
