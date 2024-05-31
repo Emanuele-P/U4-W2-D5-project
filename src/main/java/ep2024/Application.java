@@ -26,27 +26,39 @@ public class Application {
         Article newArticle = new Article("6029950737040", "A Swiftly Tilting Planet", 2012, 133, Release.SEMESTRAL);
         addElementToCatalogue(initialCatalogue, newArticle);
 
-        Catalogue foundFromIsbn = findElementByIsbn(initialCatalogue, "8762950430408");
+        removeElementFromCatalogue(initialCatalogue, "6029950737040");
+
+        Catalogue foundByIsbn = findElementByIsbn(initialCatalogue, "8762950430408");
         System.out.println();
-        System.out.println("-----Element found from ISBN:");
-        System.out.println(foundFromIsbn);
+        System.out.println("-----Element found by ISBN:");
+        if (foundByIsbn != null) {
+            System.out.println(foundByIsbn);
+        } else {
+            System.out.println("Not found");
+        }
     }
 
     public static void addElementToCatalogue(List<Catalogue> catalogue, Catalogue item) {
         catalogue.add(item);
         System.out.println();
         System.out.println("Element successfully added!");
-        for (Catalogue catalogueItem : catalogue) {
-            System.out.println(catalogueItem);
-        }
+        System.out.println("Updated catalogue:");
+
+        catalogue.forEach(System.out::println);
     }
 
-    public static void removeElementFromCatalogue(List<Catalogue> catalogue, Catalogue item) {
-        catalogue.remove(item);
-        System.out.println();
-        System.out.println("Element successfully removed!");
-        for (Catalogue catalogueItem : catalogue) {
-            System.out.println(catalogueItem);
+    public static void removeElementFromCatalogue(List<Catalogue> catalogue, String isbn) {
+        Catalogue item = findElementByIsbn(catalogue, isbn);
+        if (item != null) {
+            catalogue.remove(item);
+            System.out.println();
+            System.out.println("Element successfully removed!");
+            System.out.println("Updated catalogue:");
+
+            catalogue.forEach(System.out::println);
+
+        } else {
+            System.out.println("Cannot remove the element as it is not found");
         }
     }
 
@@ -55,12 +67,11 @@ public class Application {
                 .collect(Collectors.groupingBy(Catalogue::getIsbn));
 
         List<Catalogue> isbnSearch = isbnCatalogue.get(isbn);
-        if (isbnSearch == null) {
-            System.out.println("Item not found");
-        } else {
+        if (isbnSearch != null) {
             return isbnSearch.get(0);
+        } else {
+            return null;
         }
-        return null;
     }
 
     public static List<Catalogue> generateInitialCatalogue() {
