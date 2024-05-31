@@ -26,51 +26,58 @@ public class Application {
         Article newArticle = new Article("6029950737040", "A Swiftly Tilting Planet", 2012, 133, Release.SEMESTRAL);
         addElementToCatalogue(initialCatalogue, newArticle);
 
-        removeElementFromCatalogue(initialCatalogue, "6029950737040");
+        removeElementFromCatalogue("6029950737040", initialCatalogue);
 
-        Catalogue foundByIsbn = findElementByIsbn(initialCatalogue, "8762950430408");
-        System.out.println();
-        System.out.println("-----Element found by ISBN:");
-        if (foundByIsbn != null) {
-            System.out.println(foundByIsbn);
-        } else {
-            System.out.println("Not found");
-        }
+        findElementByIsbn("8762950430408", initialCatalogue);
+
+        findElementsByYear(1956, initialCatalogue);
     }
 
     public static void addElementToCatalogue(List<Catalogue> catalogue, Catalogue item) {
         catalogue.add(item);
         System.out.println();
-        System.out.println("Element successfully added!");
-        System.out.println("Updated catalogue:");
+        System.out.println("'" + item.getTitle() + "' successfully added!");
+        System.out.println("Updating catalogue...");
 
         catalogue.forEach(System.out::println);
     }
 
-    public static void removeElementFromCatalogue(List<Catalogue> catalogue, String isbn) {
-        Catalogue item = findElementByIsbn(catalogue, isbn);
-        if (item != null) {
-            catalogue.remove(item);
+    public static void removeElementFromCatalogue(String isbn, List<Catalogue> catalogue) {
+        boolean found = catalogue.removeIf(item -> item.getIsbn().equals(isbn));
+        if (found) {
             System.out.println();
-            System.out.println("Element successfully removed!");
-            System.out.println("Updated catalogue:");
+            System.out.println("Element with ISBN " + isbn + " successfully removed!");
+            System.out.println("Updating catalogue...");
 
             catalogue.forEach(System.out::println);
-
         } else {
-            System.out.println("Cannot remove the element as it is not found");
+            System.out.println("No elements found for the ISBN " + isbn + ". Cannot remove");
         }
     }
 
-    public static Catalogue findElementByIsbn(List<Catalogue> catalogue, String isbn) {
+    public static void findElementByIsbn(String isbn, List<Catalogue> catalogue) {
         Map<String, List<Catalogue>> isbnCatalogue = catalogue.stream()
                 .collect(Collectors.groupingBy(Catalogue::getIsbn));
 
         List<Catalogue> isbnSearch = isbnCatalogue.get(isbn);
         if (isbnSearch != null) {
-            return isbnSearch.get(0);
+            System.out.println("-----Elements found by ISBN (" + isbn + "):");
+            isbnSearch.forEach(System.out::println);
         } else {
-            return null;
+            System.out.println("No elements found for the ISBN " + isbn);
+        }
+    }
+
+    public static void findElementsByYear(int year, List<Catalogue> catalogue) {
+        Map<Integer, List<Catalogue>> yearCatalogue = catalogue.stream()
+                .collect(Collectors.groupingBy(Catalogue::getYear));
+
+        List<Catalogue> yearSearch = yearCatalogue.get(year);
+        if (yearSearch != null) {
+            System.out.println("-----Elements found by Year (" + year + "):");
+            yearSearch.forEach(System.out::println);
+        } else {
+            System.out.println("No elements found for the year " + year);
         }
     }
 
