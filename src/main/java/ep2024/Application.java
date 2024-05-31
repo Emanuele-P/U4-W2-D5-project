@@ -22,23 +22,23 @@ public class Application {
 //            System.out.println(item);
 //        }
 
-//        Book newBook = new Book("8762950430408", "Snow country", 1956, 346, "Yasunari Kawabata", "Novel");
-//        addElementToCatalogue(initialCatalogue, newBook);
-//        Article newArticle = new Article("6029950737040", "A Swiftly Tilting Planet", 2012, 133, Release.SEMESTRAL);
-//        addElementToCatalogue(initialCatalogue, newArticle);
-//        Book newBook2 = new Book("4729385627103", "1984", 1949, 328, "George Orwell", "Dystopian");
-//        addElementToCatalogue(initialCatalogue, newBook2);
-//        Book newBook3 = new Book("9354738291564", "Animal Farm", 1945, 92, "George Orwell", "Political satire");
-//        addElementToCatalogue(initialCatalogue, newBook3);
-//
-//
-//        removeElementFromCatalogue("6029950737040", initialCatalogue);
-//
-//        findElementByIsbn("8762950430408", initialCatalogue);
-//
-//        findElementsByYear(1956, initialCatalogue);
-//
-//        findBooksByAuthor("George Orwell", initialCatalogue);
+        Book newBook = new Book("8762950430408", "Snow country", 1956, 346, "Yasunari Kawabata", "Novel");
+        addElementToCatalogue(initialCatalogue, newBook);
+        Article newArticle = new Article("6029950737040", "A Swiftly Tilting Planet", 2012, 133, Release.SEMESTRAL);
+        addElementToCatalogue(initialCatalogue, newArticle);
+        Book newBook2 = new Book("4729385627103", "1984", 1949, 328, "George Orwell", "Dystopian");
+        addElementToCatalogue(initialCatalogue, newBook2);
+        Book newBook3 = new Book("9354738291564", "Animal Farm", 1945, 92, "George Orwell", "Political satire");
+        addElementToCatalogue(initialCatalogue, newBook3);
+
+
+        removeElementFromCatalogue("6029950737040", initialCatalogue);
+
+        findElementByIsbn("8762950430408", initialCatalogue);
+
+        findElementsByYear(1956, initialCatalogue);
+
+        findBooksByAuthor("George Orwell", initialCatalogue);
 
         Scanner sc = new Scanner(System.in);
         int menuChoice;
@@ -273,7 +273,7 @@ public class Application {
         Faker faker = new Faker();
         List<Book> books = new ArrayList<>();
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             String isbn = faker.code().isbn13();
             String title = faker.book().title();
             int year = faker.number().numberBetween(1900, 2024);
