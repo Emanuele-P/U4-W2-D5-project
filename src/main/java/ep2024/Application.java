@@ -25,12 +25,19 @@ public class Application {
         addElementToCatalogue(initialCatalogue, newBook);
         Article newArticle = new Article("6029950737040", "A Swiftly Tilting Planet", 2012, 133, Release.SEMESTRAL);
         addElementToCatalogue(initialCatalogue, newArticle);
+        Book newBook2 = new Book("4729385627103", "1984", 1949, 328, "George Orwell", "Dystopian");
+        addElementToCatalogue(initialCatalogue, newBook2);
+        Book newBook3 = new Book("9354738291564", "Animal Farm", 1945, 92, "George Orwell", "Political satire");
+        addElementToCatalogue(initialCatalogue, newBook3);
+
 
         removeElementFromCatalogue("6029950737040", initialCatalogue);
 
         findElementByIsbn("8762950430408", initialCatalogue);
 
         findElementsByYear(1956, initialCatalogue);
+
+        findBooksByAuthor("George Orwell", initialCatalogue);
     }
 
     public static void addElementToCatalogue(List<Catalogue> catalogue, Catalogue item) {
@@ -81,6 +88,21 @@ public class Application {
         }
     }
 
+    public static void findBooksByAuthor(String author, List<Catalogue> catalogue) {
+        Map<String, List<Book>> authorCatalogue = catalogue.stream()
+                .filter(item -> item instanceof Book)
+                .map(item -> (Book) item)
+                .collect(Collectors.groupingBy(Book::getAuthor));
+
+        List<Book> booksByAuthor = authorCatalogue.get(author);
+        if (booksByAuthor != null) {
+            System.out.println("-----Books found by Author (" + author + "):");
+            booksByAuthor.forEach(System.out::println);
+        } else {
+            System.out.println("No books found by Author " + author);
+        }
+    }
+
     public static List<Catalogue> generateInitialCatalogue() {
         List<Catalogue> catalogue = new ArrayList<>();
         catalogue.addAll(generateBook());
@@ -111,7 +133,7 @@ public class Application {
         List<Article> articles = new ArrayList<>();
         Release[] releases = Release.values();
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             String isbn = faker.code().isbn13();
             String title = faker.book().title();
             int year = faker.number().numberBetween(1900, 2024);
