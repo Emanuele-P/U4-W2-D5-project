@@ -8,6 +8,8 @@ import ep2024.enums.Release;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Application {
 
@@ -21,8 +23,13 @@ public class Application {
 
         Book newBook = new Book("8762950430408", "Snow country", 1956, 346, "Yasunari Kawabata", "Novel");
         addElementToCatalogue(initialCatalogue, newBook);
-        Article newArticle = new Article("8762950430408", "A Swiftly Tilting Planet", 2012, 133, Release.SEMESTRAL);
+        Article newArticle = new Article("6029950737040", "A Swiftly Tilting Planet", 2012, 133, Release.SEMESTRAL);
         addElementToCatalogue(initialCatalogue, newArticle);
+
+        Catalogue foundFromIsbn = findElementByIsbn(initialCatalogue, "8762950430408");
+        System.out.println();
+        System.out.println("-----Element found from ISBN:");
+        System.out.println(foundFromIsbn);
     }
 
     public static void addElementToCatalogue(List<Catalogue> catalogue, Catalogue item) {
@@ -32,6 +39,28 @@ public class Application {
         for (Catalogue catalogueItem : catalogue) {
             System.out.println(catalogueItem);
         }
+    }
+
+    public static void removeElementFromCatalogue(List<Catalogue> catalogue, Catalogue item) {
+        catalogue.remove(item);
+        System.out.println();
+        System.out.println("Element successfully removed!");
+        for (Catalogue catalogueItem : catalogue) {
+            System.out.println(catalogueItem);
+        }
+    }
+
+    public static Catalogue findElementByIsbn(List<Catalogue> catalogue, String isbn) {
+        Map<String, List<Catalogue>> isbnCatalogue = catalogue.stream()
+                .collect(Collectors.groupingBy(Catalogue::getIsbn));
+
+        List<Catalogue> isbnSearch = isbnCatalogue.get(isbn);
+        if (isbnSearch == null) {
+            System.out.println("Item not found");
+        } else {
+            return isbnSearch.get(0);
+        }
+        return null;
     }
 
     public static List<Catalogue> generateInitialCatalogue() {
