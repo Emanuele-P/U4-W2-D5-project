@@ -19,6 +19,19 @@ public class Application {
             System.out.println(item);
         }
 
+        Book newBook = new Book("8762950430408", "Snow country", 1956, 346, "Yasunari Kawabata", "Novel");
+        addElementToCatalogue(initialCatalogue, newBook);
+        Article newArticle = new Article("8762950430408", "A Swiftly Tilting Planet", 2012, 133, Release.SEMESTRAL);
+        addElementToCatalogue(initialCatalogue, newArticle);
+    }
+
+    public static void addElementToCatalogue(List<Catalogue> catalogue, Catalogue item) {
+        catalogue.add(item);
+        System.out.println();
+        System.out.println("Element successfully added!");
+        for (Catalogue catalogueItem : catalogue) {
+            System.out.println(catalogueItem);
+        }
     }
 
     public static List<Catalogue> generateInitialCatalogue() {
